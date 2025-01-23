@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import Sparkler from "./sparkler/sparkler";
-import { GUI } from "dat.gui";
+import { GUI } from "lil-gui";
 
 class Experience {
   private renderer: THREE.WebGLRenderer;
@@ -12,7 +12,10 @@ class Experience {
 
   constructor(domElement: HTMLElement) {
     this.scene = new THREE.Scene();
-    this.renderer = new THREE.WebGLRenderer({ canvas: domElement, antialias: true });
+    this.renderer = new THREE.WebGLRenderer({
+      canvas: domElement,
+      antialias: true,
+    });
 
     this.setupCamera();
     this.setupControls();
@@ -43,7 +46,7 @@ class Experience {
   }
 
   private setupSparkler() {
-    this.sparkler = new Sparkler(0.1, 3, 32);
+    this.sparkler = new Sparkler(0.04, 3, 32);
     this.scene.add(this.sparkler);
   }
 
@@ -61,7 +64,12 @@ class Experience {
 
   private setupGUI() {
     const gui = new GUI();
-    gui.add({ t: 0 }, "t").min(0).max(1).step(0.01).name("t").onChange((t: number) => this.sparkler.update(t));
+    gui
+      .add({ t: 0 }, "t")
+      .min(0)
+      .max(1)
+      .step(0.01)
+      .onChange((t: number) => this.sparkler.update(t));
   }
 
   private update = () => {};
