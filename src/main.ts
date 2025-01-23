@@ -1,3 +1,4 @@
 import Experience from './experience';
 
-new Experience();
+const canvas = document.getElementById('canvas') as HTMLCanvasElement;
+new Experience(canvas);
