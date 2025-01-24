@@ -1,14 +1,18 @@
 import * as THREE from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import Sparkler from "./sparkler/sparkler";
 import { GUI } from "lil-gui";
+
+const constants = {
+  interpolationSpeed: 0.3,
+  trackMouse: false,
+};
 
 class Experience {
   private renderer: THREE.WebGLRenderer;
   private scene: THREE.Scene;
   private camera!: THREE.PerspectiveCamera;
   private sparkler!: Sparkler;
-  private controls!: OrbitControls;
+  private mouse: THREE.Vector2;
 
   constructor(domElement: HTMLElement) {
     this.scene = new THREE.Scene();
@@ -16,9 +20,8 @@ class Experience {
       canvas: domElement,
       antialias: true,
     });
-
+    this.mouse = new THREE.Vector2();
     this.setupCamera();
-    this.setupControls();
     this.setupRenderer();
     this.setupSparkler();
     this.setupEventListeners();
@@ -36,17 +39,13 @@ class Experience {
     this.camera.position.z = 5;
   }
 
-  private setupControls() {
-    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-    this.controls.enableDamping = true;
-  }
-
   private setupRenderer() {
     this.renderer.setSize(window.innerWidth, window.innerHeight);
   }
 
   private setupSparkler() {
     this.sparkler = new Sparkler(0.04, 3, 32);
+    this.sparkler.position.set(0, -1, 0);
     this.scene.add(this.sparkler);
   }
 
@@ -60,10 +59,30 @@ class Experience {
 
       this.renderer.setSize(width, height);
     });
+
+    window.addEventListener("mousemove", (event) => {
+      this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+      this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    });
   }
 
   private setupGUI() {
     const gui = new GUI();
+
+    const trackMouse = gui.add(constants, "trackMouse").name("Track Mouse");
+
+    const interpolationSpeed = gui
+      .add(constants, "interpolationSpeed")
+      .min(0)
+      .max(1)
+      .step(0.01)
+      .enable(constants.trackMouse)
+      .name("Interpolation Speed");
+
+    trackMouse.onChange((value: boolean) => {
+      interpolationSpeed.enable(value);
+    });
+
     gui
       .add({ t: 0 }, "t")
       .min(0)
@@ -72,7 +91,28 @@ class Experience {
       .onChange((t: number) => this.sparkler.update(t));
   }
 
-  private update = () => {};
+  private rotateTowardsMouse = () => {
+    const sourceQuaternion = new THREE.Quaternion().setFromEuler(
+      this.sparkler.rotation
+    );
+    const targetQuaternion = new THREE.Quaternion().setFromEuler(
+      new THREE.Euler(
+        (Math.PI / 2) * (this.mouse.y - 0.5),
+        0,
+        (Math.PI / 2) * -this.mouse.x
+      )
+    );
+    sourceQuaternion.slerp(targetQuaternion, constants.interpolationSpeed);
+    this.sparkler.rotation.setFromQuaternion(sourceQuaternion);
+  }
+
+  private update = () => {
+    if (constants.trackMouse) {
+      this.rotateTowardsMouse();
+    } else {
+      this.sparkler.rotation.set(0, 0, 0);
+    }
+  };
 
   private render = () => {
     requestAnimationFrame(this.render);

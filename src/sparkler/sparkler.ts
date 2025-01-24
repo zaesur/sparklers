@@ -22,18 +22,23 @@ export default class Sparkler extends THREE.Mesh implements Updateable {
   constructor(radius: number, length: number, segments: number) {
     super(...Sparkler.init(radius, length, segments));
     this.length = length;
+    
+    // Set the position of the sparkler to the center of the cylinder.
+    const translate = new THREE.Matrix4().makeTranslation(0, this.length / 2, 0);
+    this.geometry.applyMatrix4(translate);
+
     this.setupSparks(radius * 10);
   }
 
   private setupSparks(radius: number) {
     this.sparks = new Sparks(radius, 1);
-    this.sparks.position.y = this.length / 2;
     this.add(this.sparks);
+    this.update(0);
   }
 
   update(t: number) {
     // Map the interval [0, 1] along the length of the sparkler.
-    this.sparks.position.y = (0.5 - t) * this.length;
+    this.sparks.position.y = this.length * (1 - t);
   }
 
   dispose() {
