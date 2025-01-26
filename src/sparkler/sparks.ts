@@ -1,12 +1,12 @@
 import * as THREE from "three";
-import constants from "../constants";
 import { ensureArray } from "../utils";
+import constants from "../constants";
 
 export default class Sparks extends THREE.Mesh {
   private static init = (
     radius: number,
     detail: number = 1
-  ): [THREE.IcosahedronGeometry, THREE.MeshBasicMaterial] => {
+  ): [THREE.IcosahedronGeometry, THREE.Material] => {
     return [
       new THREE.IcosahedronGeometry(radius, detail),
       new THREE.MeshBasicMaterial({ color: constants.color, wireframe: true }),

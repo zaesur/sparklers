@@ -104,7 +104,7 @@ class Experience {
     );
     sourceQuaternion.slerp(targetQuaternion, constants.interpolationSpeed);
     this.sparkler.rotation.setFromQuaternion(sourceQuaternion);
-  }
+  };
 
   private update = () => {
     if (constants.trackMouse) {
