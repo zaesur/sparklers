@@ -5,7 +5,10 @@ import { GUI } from "lil-gui";
 const constants = {
   interpolationSpeed: 0.3,
   trackMouse: false,
+  animate: true,
 };
+
+let t = 0;
 
 class Experience {
   private renderer: THREE.WebGLRenderer;
@@ -111,6 +114,10 @@ class Experience {
       this.rotateTowardsMouse();
     } else {
       this.sparkler.rotation.set(0, 0, 0);
+    }
+
+    if (constants.animate) {
+      this.sparkler.update(t++ / 500 % 1);
     }
   };
 

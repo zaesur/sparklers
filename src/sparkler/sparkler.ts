@@ -27,14 +27,14 @@ export default class Sparkler extends THREE.Mesh implements Updateable {
   }
 
   private setupSparks(radius: number) {
-    const geometry = new THREE.IcosahedronGeometry(radius * 5, 1);
+    const geometry = new THREE.IcosahedronGeometry(radius * 4, 0);
     const resolution = new THREE.Vector2(
       window.innerWidth * Math.min(window.devicePixelRatio, 2),
       window.innerHeight * Math.min(window.devicePixelRatio, 2)
     );
-    const texture = new THREE.TextureLoader().load("./particles/6.png");
+    const texture = new THREE.TextureLoader().load("./particles/1.png");
     const color = new THREE.Color(constants.color);
-    const sparks = new Fireworks(geometry, 0.5, resolution, texture, color);
+    const sparks = new Fireworks(geometry, 0.2, resolution, texture, color);
 
     this.sparks = sparks;
     this.add(this.sparks);
@@ -44,7 +44,7 @@ export default class Sparkler extends THREE.Mesh implements Updateable {
   update(t: number) {
     // Map the interval [0, 1] along the length of the sparkler.
     this.sparks.position.y = this.length * (1 - t);
-    this.sparks.material.uniforms.uProgress.value = (t * 10) % 1;
+    this.sparks.material.uniforms.uProgress.value = t;
   }
 
   dispose() {

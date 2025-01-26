@@ -2,50 +2,58 @@ uniform float uSize;
 uniform vec2 uResolution;
 uniform float uProgress;
 attribute float aSize;
+attribute float aRandom;
+
+#define PI 3.1415926535897932384626433832795
 
 float remap(float value, float originMin, float originMax, float destinationMin, float destinationMax)
 {
     return destinationMin + (value - originMin) * (destinationMax - destinationMin) / (originMax - originMin);
 }
 
+float easeOutCubic(float t) {
+    return 1.0 - pow(1.0 - t, 3.0);
+}
+
+float easeOutSine(float t) {
+    return sin((t * PI) / 2.0);
+}
+
+float calcualateIndiviualProgress(float globalProgress, float N, float random) {
+    float index = floor(random * N);
+    float rangeStart = index / N;
+    float rangeEnd = (index + 1.0) / N;
+
+    // 1.0 if globalProgress is in range, 0.0 otherwise
+    float isActive = step(rangeStart, globalProgress) * step(globalProgress, rangeEnd);
+
+    // 0.0 to 1.0 based on globalProgress
+    float individualProgress = remap(globalProgress, rangeStart, rangeEnd, 0.0, 1.0);
+
+    return isActive * individualProgress;
+}
+
 void main()
 {
-    float progress = mod(uProgress + aSize, 1.0);
+    float repetitions = 4.0;
+    float individualProgress = calcualateIndiviualProgress(uProgress, repetitions, aRandom);
 
-    vec3 newPosition = position;
-    float newSize = aSize;
+    float targetSize = uSize * aSize;
+    vec3 targetPosition = position;
 
-    // Exploding
-    // float explodingProgress = remap(progress, 0.0, 0.1, 0.0, 1.0);
-    float explodingProgress = progress;
-    explodingProgress = clamp(explodingProgress, 0.0, 1.0);
-    explodingProgress = 1.0 - pow(1.0 - explodingProgress, 3.0);
-    newPosition = mix(vec3(0.0), newPosition, explodingProgress);
+    // Explode
+    targetPosition *= individualProgress * aSize;
 
-    // Falling
-    float fallingProgress = remap(progress, 0.1, 1.0, 0.0, 1.0);
-    fallingProgress = clamp(fallingProgress, 0.0, 1.0);
-    fallingProgress = 1.0 - pow(1.0 - fallingProgress, 3.0);
-    // newPosition.y -= fallingProgress * 0.2;
+    // Scale
+    targetSize *= easeOutSine(individualProgress);
 
-    // Scaling
-    float sizeOpeningProgress = remap(progress, 0.0, 0.7, 0.0, 1.0);
-    float sizeClosingProgress = remap(progress, 0.7, 1.0, 1.0, 0.0);
-    float sizeProgress = min(sizeOpeningProgress, sizeClosingProgress);
-    // newSize *= clamp(sizeProgress, 0.0, 1.0);
-
-    // Twinkling
-    float twinklingProgress = remap(progress, 0.2, 0.8, 0.0, 1.0);
-    twinklingProgress = clamp(twinklingProgress, 0.0, 1.0);
-    float sizeTwinkling = sin(uProgress * 30.0) * 0.5 + 0.5;
-    // newSize *= 1.0 - sizeTwinkling + twinklingProgress;
 
     // Final position
-    vec4 modelPosition = modelMatrix * vec4(newPosition, 1.0);
+    vec4 modelPosition = modelMatrix * vec4(targetPosition, 1.0);
     vec4 viewPosition = viewMatrix * modelPosition;
     gl_Position = projectionMatrix * viewPosition;
 
     // Final size
-    gl_PointSize = uSize * uResolution.y * newSize;
+    gl_PointSize = uResolution.y * targetSize;
     gl_PointSize *= 1.0 / - viewPosition.z;
 }
