@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import Sparkler from "./sparkler/sparkler";
-import { GUI } from "lil-gui";
+import Renderer from "./renderer";
 
 const constants = {
   interpolationSpeed: 0.3,
@@ -11,21 +11,15 @@ const constants = {
 let t = 0;
 
 class Experience {
-  private renderer: THREE.WebGLRenderer;
-  private scene: THREE.Scene;
+  private renderer!: Renderer;
+  private scene!: THREE.Scene;
   private camera!: THREE.PerspectiveCamera;
   private sparkler!: Sparkler;
-  private mouse: THREE.Vector2;
+  private mouse: THREE.Vector2 = new THREE.Vector2;
 
   constructor(domElement: HTMLElement) {
-    this.scene = new THREE.Scene();
-    this.renderer = new THREE.WebGLRenderer({
-      canvas: domElement,
-      antialias: true,
-    });
-    this.mouse = new THREE.Vector2();
     this.setupCamera();
-    this.setupRenderer();
+    this.setupRenderer(domElement);
     this.setupSparkler();
     this.setupEventListeners();
     this.setupGUI();
@@ -42,7 +36,16 @@ class Experience {
     this.camera.position.z = 5;
   }
 
-  private setupRenderer() {
+  private setupRenderer(domElement: HTMLElement) {
+    this.scene = new THREE.Scene();
+    this.renderer = new Renderer(
+      new THREE.WebGLRenderer({
+        canvas: domElement,
+        antialias: true
+      }),
+      this.scene,
+      this.camera
+    );
     this.renderer.setSize(window.innerWidth, window.innerHeight);
   }
 
@@ -70,11 +73,11 @@ class Experience {
   }
 
   private setupGUI() {
-    const gui = new GUI();
+    const trackMouse = window.gui
+      .add(constants, "trackMouse")
+      .name("Track Mouse");
 
-    const trackMouse = gui.add(constants, "trackMouse").name("Track Mouse");
-
-    const interpolationSpeed = gui
+    const interpolationSpeed = window.gui
       .add(constants, "interpolationSpeed")
       .min(0)
       .max(1)
@@ -86,7 +89,7 @@ class Experience {
       interpolationSpeed.enable(value);
     });
 
-    gui
+    window.gui
       .add({ t: 0 }, "t")
       .min(0)
       .max(1)
@@ -114,17 +117,17 @@ class Experience {
       this.sparkler.position.x = this.mouse.x * 3;
       this.sparkler.position.y = -1 + this.mouse.y;
       this.rotateTowardsMouse();
-    } 
+    }
 
     if (constants.animate) {
-      this.sparkler.update(t++ / 500 % 1);
+      this.sparkler.update((t++ / 500) % 1);
     }
   };
 
   private render = () => {
     requestAnimationFrame(this.render);
     this.update();
-    this.renderer.render(this.scene, this.camera);
+    this.renderer.render();
   };
 }
 

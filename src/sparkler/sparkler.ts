@@ -32,7 +32,7 @@ export default class Sparkler extends THREE.Mesh implements Updateable {
       window.innerHeight * Math.min(window.devicePixelRatio, 2)
     );
     const texture = new THREE.TextureLoader().load("./particles/1.png");
-    const color = new THREE.Color().setHSL(32 / 255, 0.7, 0.5);
+    const color = new THREE.Color().setHSL(0.1, 0.7, 0.5);
     const sparks = new Fireworks(geometry, 0.2, resolution, texture, color);
 
     this.sparks = sparks;
