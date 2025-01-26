@@ -111,10 +111,10 @@ class Experience {
 
   private update = () => {
     if (constants.trackMouse) {
+      this.sparkler.position.x = this.mouse.x * 3;
+      this.sparkler.position.y = -1 + this.mouse.y;
       this.rotateTowardsMouse();
-    } else {
-      this.sparkler.rotation.set(0, 0, 0);
-    }
+    } 
 
     if (constants.animate) {
       this.sparkler.update(t++ / 500 % 1);

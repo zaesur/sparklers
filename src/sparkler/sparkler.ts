@@ -1,6 +1,5 @@
 import * as THREE from "three";
 import { Updateable } from "./updateable.d";
-import constants from "../constants";
 import { ensureArray } from "../utils";
 import Fireworks from "./fireworks";
 
@@ -15,7 +14,7 @@ export default class Sparkler extends THREE.Mesh implements Updateable {
   ): [THREE.CylinderGeometry, THREE.MeshBasicMaterial] => {
     return [
       new THREE.CylinderGeometry(radius, radius, length, segments),
-      new THREE.MeshBasicMaterial({ color: constants.color }),
+      new THREE.MeshBasicMaterial({ color: "grey" }),
     ];
   };
 
@@ -33,7 +32,7 @@ export default class Sparkler extends THREE.Mesh implements Updateable {
       window.innerHeight * Math.min(window.devicePixelRatio, 2)
     );
     const texture = new THREE.TextureLoader().load("./particles/1.png");
-    const color = new THREE.Color(constants.color);
+    const color = new THREE.Color().setHSL(32 / 255, 0.7, 0.5);
     const sparks = new Fireworks(geometry, 0.2, resolution, texture, color);
 
     this.sparks = sparks;
