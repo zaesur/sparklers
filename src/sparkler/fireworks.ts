@@ -18,11 +18,13 @@ class Fireworks extends THREE.Points<THREE.BufferGeometry, FireworksMaterial> {
   #initalizeAttributes() {
     const count = this.geometry.getAttribute("position").count;
     const sizes = new Float32Array(count);
-    const random = new Float32Array(count);
+    const offsets = new Float32Array(count);
+    const rotations = new Float32Array(count);
 
     for (let i = 0; i < count; i++) {
       sizes[i] = Math.random();
-      random[i] = Math.random();
+      offsets[i] = Math.random();
+      rotations[i] = Math.random();
     }
 
     this.geometry.setAttribute(
@@ -30,8 +32,12 @@ class Fireworks extends THREE.Points<THREE.BufferGeometry, FireworksMaterial> {
       new THREE.Float32BufferAttribute(sizes, 1)
     );
     this.geometry.setAttribute(
-      "aRandom",
-      new THREE.Float32BufferAttribute(random, 1)
+      "aOffset",
+      new THREE.Float32BufferAttribute(offsets, 1)
+    );
+    this.geometry.setAttribute(
+      "aRotation",
+      new THREE.Float32BufferAttribute(rotations, 1)
     );
   }
 

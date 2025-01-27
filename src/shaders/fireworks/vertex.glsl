@@ -2,7 +2,9 @@ uniform float uSize;
 uniform vec2 uResolution;
 uniform float uProgress;
 attribute float aSize;
-attribute float aRandom;
+attribute float aOffset;
+attribute float aRotation;
+varying float vRotation;
 
 #define PI 3.1415926535897932384626433832795
 
@@ -31,8 +33,9 @@ float calcualateIndiviualProgress(float globalProgress, float start, float durat
 
 void main()
 {
+    vRotation = aRotation;
     float duration = 0.007;
-    float individualProgress = calcualateIndiviualProgress(uProgress, aRandom, duration);
+    float individualProgress = calcualateIndiviualProgress(uProgress, aOffset, duration);
 
     float targetSize = uSize * aSize;
     vec3 targetPosition = position;
