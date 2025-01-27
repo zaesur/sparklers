@@ -94,26 +94,28 @@ class Experience {
     });
   }
 
-  private rotateTowardsMouse = () => {
+  private followMouse = () => {
+    // Rotation
     const sourceQuaternion = new THREE.Quaternion().setFromEuler(
       this.sparkler.rotation
     );
     const targetQuaternion = new THREE.Quaternion().setFromEuler(
       new THREE.Euler(
-        (Math.PI / 2) * (this.mouse.y - 0.5),
+        (Math.PI / 4) * (this.mouse.y - 0.5),
         0,
         (Math.PI / 2) * -this.mouse.x
       )
     );
     sourceQuaternion.slerp(targetQuaternion, constants.interpolationSpeed);
     this.sparkler.rotation.setFromQuaternion(sourceQuaternion);
+
+    // Position
+    this.sparkler.position.lerp({x: this.mouse.x * 3, y: -1 + this.mouse.y, z: 0}, constants.interpolationSpeed);
   };
 
   private update = () => {
     if (constants.trackMouse) {
-      this.sparkler.position.x = this.mouse.x * 3;
-      this.sparkler.position.y = -1 + this.mouse.y;
-      this.rotateTowardsMouse();
+      this.followMouse();
     }
 
     if (constants.animate) {
