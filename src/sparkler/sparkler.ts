@@ -28,7 +28,9 @@ export default class Sparkler extends THREE.Mesh<THREE.BufferGeometry, SparklerM
 
     const folder = window.gui.addFolder("Sparkler");
     folder.addColor(this.material, "baseColor");
+    folder.add(this.material, "burnWidth", 0, 0.2, 0.01);
     folder.addColor(this.material, "burnColor");
+    folder.add(this.material, "trailWidth", 0, 0.5, 0.01);
     folder.addColor(this.material, "trailColor");
     folder.addColor(this.material, "burntColor");
   }
