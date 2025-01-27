@@ -44,37 +44,9 @@ class Sparks extends THREE.Points<THREE.BufferGeometry, SparksMaterial> {
     this.initalizeAttributes();
   }
 
-  get duration() {
-    return this.material.uniforms.uDuration.value;
-  }
-
-  set duration(duration: number) {
-    this.material.uniforms.uDuration.value = duration;
-  }
-
-  get color() {
-    return this.material.uniforms.uColor.value;
-  }
-
-  set color(color: THREE.Color) {
-    this.material.uniforms.uColor.value = color;
-  }
-
-  get size() {
-    return this.material.uniforms.uSize.value;
-  }
-
-  set size(size: number) {
-    this.material.uniforms.uSize.value = size;
-  }
-
-  get resolution() {
-    return this.material.uniforms.uResolution.value;
-  }
-
   update(t: number) {
-    this.material.uniforms.uProgress.value = t;
-  }
+    this.material.progress = t;
+  } 
 
   dispose() {
     for (const material of ensureArray(this.material)) {

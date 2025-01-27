@@ -20,6 +20,38 @@ class SparksMaterial extends THREE.ShaderMaterial {
       },
     });
   }
+
+  get resolution() {
+    return this.uniforms.uResolution.value;
+  }
+
+  get progress() {
+    return this.uniforms.uProgress.value;
+  }
+  set progress(value: number) {
+    this.uniforms.uProgress.value = value;
+  }
+
+  get size() {
+    return this.uniforms.uSize.value;
+  }
+  set size(value: number) {
+    this.uniforms.uSize.value = value;
+  }
+
+  get duration() {
+    return this.uniforms.uDuration.value;
+  }
+  set duration(value: number) {
+    this.uniforms.uDuration.value = value;
+  }
+
+  get color() {
+    return this.uniforms.uColor.value;
+  }
+  set color(value: THREE.Color) {
+    this.uniforms.uColor.value = value;
+  }
 }
 
 export default SparksMaterial;
