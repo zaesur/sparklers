@@ -26,7 +26,7 @@ export default class Sparkler extends THREE.Mesh implements Updateable {
   }
 
   private setupSparks(radius: number) {
-    const geometry = new THREE.IcosahedronGeometry(radius * 4, 0);
+    const geometry = new THREE.IcosahedronGeometry(radius * 4, 2);
     const resolution = new THREE.Vector2(
       window.innerWidth * Math.min(window.devicePixelRatio, 2),
       window.innerHeight * Math.min(window.devicePixelRatio, 2)

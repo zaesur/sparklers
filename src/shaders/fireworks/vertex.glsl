@@ -19,24 +19,20 @@ float easeOutSine(float t) {
     return sin((t * PI) / 2.0);
 }
 
-float calcualateIndiviualProgress(float globalProgress, float N, float random) {
-    float index = floor(random * N);
-    float rangeStart = index / N;
-    float rangeEnd = (index + 1.0) / N;
+float calcualateIndiviualProgress(float globalProgress, float start, float duration) {
+    // Make sure all animations finish at 1.0.
+    float newStart = remap(start, 0.0, 1.0, 0.0, 1.0 - duration);
 
-    // 1.0 if globalProgress is in range, 0.0 otherwise
-    float isActive = step(rangeStart, globalProgress) * step(globalProgress, rangeEnd);
-
-    // 0.0 to 1.0 based on globalProgress
-    float individualProgress = remap(globalProgress, rangeStart, rangeEnd, 0.0, 1.0);
+    float isActive = step(newStart, globalProgress) * step(globalProgress, newStart + duration);
+    float individualProgress = remap(globalProgress, newStart, newStart + duration, 0.0, 1.0);
 
     return isActive * individualProgress;
 }
 
 void main()
 {
-    float repetitions = 4.0;
-    float individualProgress = calcualateIndiviualProgress(uProgress, repetitions, aRandom);
+    float duration = 0.007;
+    float individualProgress = calcualateIndiviualProgress(uProgress, aRandom, duration);
 
     float targetSize = uSize * aSize;
     vec3 targetPosition = position;

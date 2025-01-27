@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import Sparkler from "./sparkler/sparkler";
-import Renderer from "./renderer";
+import { DefaultRenderer as Renderer } from "./renderer";
 
 const constants = {
   interpolationSpeed: 0.3,
@@ -41,12 +41,12 @@ class Experience {
     this.renderer = new Renderer(
       new THREE.WebGLRenderer({
         canvas: domElement,
-        antialias: true
+        antialias: true,
       }),
       this.scene,
       this.camera
     );
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
+    this.renderer.setResolution(window.innerWidth, window.innerHeight, window.devicePixelRatio);
   }
 
   private setupSparkler() {
@@ -63,7 +63,7 @@ class Experience {
       this.camera.aspect = width / height;
       this.camera.updateProjectionMatrix();
 
-      this.renderer.setSize(width, height);
+      this.renderer.setResolution(width, height, window.devicePixelRatio);
     });
 
     window.addEventListener("mousemove", (event) => {
