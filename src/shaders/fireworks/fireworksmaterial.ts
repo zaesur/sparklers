@@ -13,6 +13,7 @@ class FireworksMaterial extends THREE.ShaderMaterial {
       uniforms: {
         uSize: new THREE.Uniform(size),
         uResolution: new THREE.Uniform(resolution),
+        uDuration: new THREE.Uniform(0.007),
         uTexture: new THREE.Uniform(texture),
         uColor: new THREE.Uniform(color),
         uProgress: new THREE.Uniform(0)

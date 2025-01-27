@@ -38,6 +38,14 @@ export default class Sparkler extends THREE.Mesh implements Updateable {
     this.sparks = sparks;
     this.add(this.sparks);
     this.update(0);
+
+    const folder = window.gui.addFolder("Sparks");
+    folder.add(this.sparks.material.uniforms.uSize, "value", 0, 1, 0.01).name("Spark size");
+    folder.add(this.sparks.material.uniforms.uDuration, "value", 0, 0.1, 0.001).name("Spark speed");
+  }
+
+  setResolution(width: number, height: number) {
+    this.sparks.material.uniforms.uResolution.value.set(width, height);
   }
 
   update(t: number) {

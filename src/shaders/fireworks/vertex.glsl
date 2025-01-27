@@ -1,6 +1,7 @@
 uniform float uSize;
 uniform vec2 uResolution;
 uniform float uProgress;
+uniform float uDuration;
 attribute float aSize;
 attribute float aOffset;
 attribute float aRotation;
@@ -34,7 +35,7 @@ float calcualateIndiviualProgress(float globalProgress, float start, float durat
 void main()
 {
     vRotation = aRotation;
-    float duration = 0.007;
+    float duration = uDuration;
     float individualProgress = calcualateIndiviualProgress(uProgress, aOffset, duration);
 
     float targetSize = uSize * aSize;
@@ -45,7 +46,6 @@ void main()
 
     // Scale
     targetSize *= easeOutSine(individualProgress);
-
 
     // Final position
     vec4 modelPosition = modelMatrix * vec4(targetPosition, 1.0);

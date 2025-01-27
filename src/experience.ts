@@ -15,7 +15,7 @@ class Experience {
   private scene!: THREE.Scene;
   private camera!: THREE.PerspectiveCamera;
   private sparkler!: Sparkler;
-  private mouse: THREE.Vector2 = new THREE.Vector2;
+  private mouse: THREE.Vector2 = new THREE.Vector2();
 
   constructor(domElement: HTMLElement) {
     this.setupCamera();
@@ -46,7 +46,11 @@ class Experience {
       this.scene,
       this.camera
     );
-    this.renderer.setResolution(window.innerWidth, window.innerHeight, window.devicePixelRatio);
+    this.renderer.setResolution(
+      window.innerWidth,
+      window.innerHeight,
+      window.devicePixelRatio
+    );
   }
 
   private setupSparkler() {
@@ -64,6 +68,7 @@ class Experience {
       this.camera.updateProjectionMatrix();
 
       this.renderer.setResolution(width, height, window.devicePixelRatio);
+      this.sparkler.setResolution(width, height);
     });
 
     window.addEventListener("mousemove", (event) => {
@@ -73,11 +78,10 @@ class Experience {
   }
 
   private setupGUI() {
-    const trackMouse = window.gui
-      .add(constants, "trackMouse")
-      .name("Track Mouse");
+    const folder = window.gui.addFolder("Controls");
+    const trackMouse = folder.add(constants, "trackMouse").name("Track Mouse");
 
-    const interpolationSpeed = window.gui
+    const interpolationSpeed = folder
       .add(constants, "interpolationSpeed")
       .min(0)
       .max(1)
@@ -89,7 +93,7 @@ class Experience {
       interpolationSpeed.enable(value);
     });
 
-    window.gui
+    folder
       .add({ t: 0 }, "t")
       .min(0)
       .max(1)
