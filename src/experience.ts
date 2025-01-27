@@ -92,13 +92,6 @@ class Experience {
     trackMouse.onChange((value: boolean) => {
       interpolationSpeed.enable(value);
     });
-
-    folder
-      .add({ t: 0 }, "t")
-      .min(0)
-      .max(1)
-      .step(0.01)
-      .onChange((t: number) => this.sparkler.update(t));
   }
 
   private rotateTowardsMouse = () => {
