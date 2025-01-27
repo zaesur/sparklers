@@ -5,6 +5,7 @@ import {
   RenderPass,
   AfterimagePass,
   UnrealBloomPass,
+  SMAAPass,
 } from "three/examples/jsm/Addons.js";
 
 class Renderer {
@@ -20,6 +21,7 @@ class Renderer {
     this.setupRenderPass(scene, camera);
     this.setupAfterImagePass();
     this.setupBloomPass();
+    this.setupAAPass();
     this.setupOutputPass();
   }
 
@@ -29,6 +31,11 @@ class Renderer {
 
   setupOutputPass() {
     this.composer.addPass(new OutputPass());
+  }
+
+  setupAAPass() {
+    const smaaPass = new SMAAPass(window.innerWidth, window.innerHeight);
+    this.composer.addPass(smaaPass);
   }
 
   setupBloomPass() {
@@ -47,7 +54,12 @@ class Renderer {
       .min(0)
       .max(3)
       .step(0.01);
-    this.folder.add(bloomPass, "radius").name("Bloom radius").min(0);
+    this.folder
+      .add(bloomPass, "radius")
+      .name("Bloom radius")
+      .min(0)
+      .max(5)
+      .step(0.1);
     this.folder
       .add(bloomPass, "threshold")
       .name("Bloom threshold")
@@ -72,6 +84,8 @@ class Renderer {
   setResolution(width: number, height: number, devicePixelRatio: number) {
     this.composer.setSize(width, height);
     this.composer.setPixelRatio(devicePixelRatio);
+    this.composer.renderer.setSize(width, height);
+    this.composer.renderer.setPixelRatio(devicePixelRatio);
 
     for (const pass of this.composer.passes) {
       pass.setSize(width, height);

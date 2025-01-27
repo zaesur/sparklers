@@ -4,6 +4,8 @@ import { ensureArray } from "../utils";
 import Sparks from "./sparks";
 import SparklerMaterial from "./sparklerMaterial";
 
+const sparksColor = new THREE.Color().setHSL(0.1, 0.7, 0.5);
+
 export default class Sparkler extends THREE.Mesh<THREE.BufferGeometry, SparklerMaterial> implements Updateable {
   private length: number;
   private sparks!: Sparks;
@@ -29,7 +31,7 @@ export default class Sparkler extends THREE.Mesh<THREE.BufferGeometry, SparklerM
     const folder = window.gui.addFolder("Sparkler");
     folder.addColor(this.material, "baseColor");
     folder.add(this.material, "burnWidth", 0, 0.2, 0.01);
-    folder.addColor(this.material, "burnColor");
+    folder.addColor(this.material, "burnColor").setValue(sparksColor);
     folder.add(this.material, "trailWidth", 0, 0.5, 0.01);
     folder.addColor(this.material, "trailColor");
     folder.addColor(this.material, "burntColor");
@@ -58,8 +60,7 @@ export default class Sparkler extends THREE.Mesh<THREE.BufferGeometry, SparklerM
       window.innerHeight * Math.min(window.devicePixelRatio, 2)
     );
     const texture = new THREE.TextureLoader().load("./particles/4.png");
-    const color = new THREE.Color().setHSL(0.1, 0.7, 0.5);
-    const sparks = new Sparks(geometry, 0.2, resolution, texture, color);
+    const sparks = new Sparks(geometry, 0.2, resolution, texture, sparksColor);
 
     this.sparks = sparks;
     this.add(this.sparks);

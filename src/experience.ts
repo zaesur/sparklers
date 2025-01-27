@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import Sparkler from "./sparkler/sparkler";
-import { DefaultRenderer as Renderer } from "./renderer";
+import { PostprocessingRenderer as Renderer } from "./renderer";
 
 const constants = {
   interpolationSpeed: 0.3,
