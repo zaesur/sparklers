@@ -1,8 +1,8 @@
 import * as THREE from "three";
-import FireworksMaterial from "../shaders/fireworks/fireworksmaterial";
-import { ensureArray } from "../utils";
+import SparksMaterial from "./sparksMaterial";
+import { ensureArray } from "../../utils";
 
-class Fireworks extends THREE.Points<THREE.BufferGeometry, FireworksMaterial> {
+class Fireworks extends THREE.Points<THREE.BufferGeometry, SparksMaterial> {
   constructor(
     geometry: THREE.BufferGeometry,
     size: number,
@@ -10,7 +10,7 @@ class Fireworks extends THREE.Points<THREE.BufferGeometry, FireworksMaterial> {
     texture: THREE.Texture,
     color = new THREE.Color("white")
   ) {
-    super(geometry, new FireworksMaterial(size, resolution, texture, color));
+    super(geometry, new SparksMaterial(size, resolution, texture, color));
     this.geometry.setIndex(null);
     this.#initialize();
   }

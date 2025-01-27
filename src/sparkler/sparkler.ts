@@ -1,11 +1,11 @@
 import * as THREE from "three";
 import { Updateable } from "./updateable.d";
 import { ensureArray } from "../utils";
-import Fireworks from "./fireworks";
+import Sparks from "./sparks";
 
 export default class Sparkler extends THREE.Mesh implements Updateable {
   private length: number;
-  private sparks!: Fireworks;
+  private sparks!: Sparks;
 
   private static init = (
     radius: number,
@@ -33,7 +33,7 @@ export default class Sparkler extends THREE.Mesh implements Updateable {
     );
     const texture = new THREE.TextureLoader().load("./particles/4.png");
     const color = new THREE.Color().setHSL(0.1, 0.7, 0.5);
-    const sparks = new Fireworks(geometry, 0.2, resolution, texture, color);
+    const sparks = new Sparks(geometry, 0.2, resolution, texture, color);
 
     this.sparks = sparks;
     this.add(this.sparks);

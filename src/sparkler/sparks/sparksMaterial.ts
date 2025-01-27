@@ -1,8 +1,8 @@
 import * as THREE from "three";
-import vertexShader from "./vertex.glsl";
-import fragmentShader from "./fragment.glsl";
+import vertexShader from "../../shaders/sparks/vertex.glsl";
+import fragmentShader from "../../shaders/sparks/fragment.glsl";
 
-class FireworksMaterial extends THREE.ShaderMaterial {
+class SparksMaterial extends THREE.ShaderMaterial {
   constructor(size: number, resolution: THREE.Vector2, texture: THREE.Texture, color = new THREE.Color("white")) {
     super({
       transparent: true,
@@ -22,4 +22,4 @@ class FireworksMaterial extends THREE.ShaderMaterial {
   }
 }
 
-export default FireworksMaterial;
+export default SparksMaterial;
