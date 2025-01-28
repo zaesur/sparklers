@@ -14,8 +14,8 @@ type Params = {
 
 class SparklerMaterial extends THREE.ShaderMaterial {
   constructor({
-    baseColor = "lightgrey",
-    burnColor = "yellow",
+    baseColor = "grey",
+    burnColor = "white",
     trailColor = "red",
     burnIntensity = 1.5,
     darkenFactor = 0.1,
