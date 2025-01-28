@@ -5,6 +5,7 @@ uniform vec3 uTrailColor;
 uniform vec3 uBurntColor;
 uniform float uTrailWidth;
 uniform float uBurnWidth;
+uniform float uBurnIntensity;
 varying vec2 vUv;
 
 void main() {
@@ -19,10 +20,8 @@ void main() {
     color = mix(color, uTrailColor, isTrail);
 
     // Burn
-    float burnFactor = 1.5;
-    float isBurning = smoothstep(uProgress - uBurnWidth / 2.0, uProgress, vUv.y) *
-        smoothstep(uProgress + uBurnWidth / 2.0, uProgress, vUv.y);
-    color = mix(color, uBurnColor * burnFactor, isBurning);
+    float isBurning = hasBurned * smoothstep(uProgress - uBurnWidth, uProgress, vUv.y);
+    color = mix(color, uBurnColor * uBurnIntensity, isBurning);
 
     gl_FragColor = vec4(color, 1.0);
 }

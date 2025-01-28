@@ -10,6 +10,7 @@ class SparklerMaterial extends THREE.ShaderMaterial {
         uBurnColor: new THREE.Uniform(new THREE.Color("yellow")),
         uTrailColor: new THREE.Uniform(new THREE.Color("red")),
         uBurntColor: new THREE.Uniform(new THREE.Color("grey")),
+        uBurnIntensity: new THREE.Uniform(1),
         uProgress: new THREE.Uniform(0),
         uTrailWidth: new THREE.Uniform(0.3),
         uBurnWidth: new THREE.Uniform(0.05),
@@ -53,7 +54,7 @@ class SparklerMaterial extends THREE.ShaderMaterial {
   set burnColor(value: THREE.Color) {
     this.uniforms.uBurnColor.value = value;
   }
-
+  
   get trailColor() {
     return this.uniforms.uTrailColor.value;
   }
@@ -66,6 +67,13 @@ class SparklerMaterial extends THREE.ShaderMaterial {
   }
   set burntColor(value: THREE.Color) {
     this.uniforms.uBurntColor.value = value;
+  }
+
+  get burnIntensity() {
+    return this.uniforms.uBurnIntensity.value;
+  }
+  set burnIntensity(value: number) {
+    this.uniforms.uBurnIntensity.value = value;
   }
 }
 

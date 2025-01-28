@@ -39,6 +39,7 @@ export default class Sparkler
     folder.add(this, "duration", 1, 100, 1);
     folder.addColor(this.material, "baseColor");
     folder.add(this.material, "burnWidth", 0, 0.2, 0.01);
+    folder.add(this.material, "burnIntensity", 0, 5, 0.1);
     folder.addColor(this.material, "burnColor").setValue(sparksColor);
     folder.add(this.material, "trailWidth", 0, 0.5, 0.01);
     folder.addColor(this.material, "trailColor");
