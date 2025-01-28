@@ -12,6 +12,7 @@ export default class Sparkler
 {
   private length: number;
   private sparks!: Sparks;
+  private sound!: HTMLAudioElement;
   duration = 20;
   isSparkling = false;
 
@@ -31,6 +32,7 @@ export default class Sparkler
     this.length = length;
     this.setupGeometry();
     this.setupUVs();
+    this.setupAudio();
     this.setupSparks(radius * 10);
 
     const folder = window.gui.addFolder("Sparkler");
@@ -78,6 +80,10 @@ export default class Sparkler
     folder.add(this.sparks.material, "duration", 0, 0.1, 0.001);
   }
 
+  setupAudio() {
+    this.sound = new Audio("sparkler_sound.mp3");
+  }
+
   setResolution(width: number, height: number) {
     this.sparks.material.resolution.set(width, height);
   }
@@ -87,12 +93,15 @@ export default class Sparkler
     this.sparks.visible = true;
     this.material.progress = 0;
     this.update(0);
+    this.sound.currentTime = 3;
+    this.sound.play();
   }
 
   stop() {
     this.isSparkling = false;
     this.sparks.visible = false;
     this.material.progress = 0;
+    this.sound.pause()
   }
 
   update(delta: number) {
