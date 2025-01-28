@@ -34,6 +34,7 @@ export default class Sparkler
     this.setupUVs();
     this.setupAudio();
     this.setupSparks(radius * 10);
+    this.setupHandle(radius * 0.5, length * 1.15);
 
     const folder = window.gui.addFolder("Sparkler");
     folder.add(this, "duration", 1, 100, 1);
@@ -60,6 +61,20 @@ export default class Sparkler
 
       uv.array[uvIndex] = 1 - position.array[posIndex] / this.length;
     }
+  }
+
+  private setupHandle(radius: number, length: number) {
+    const geometry = new THREE.CylinderGeometry(
+      radius,
+      radius,
+      length,
+      16
+    );
+    const material = new THREE.MeshBasicMaterial({
+      color: "lightgrey",
+    });
+    const handle = new THREE.Mesh(geometry, material);
+    this.add(handle);
   }
 
   private setupSparks(radius: number) {
