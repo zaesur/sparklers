@@ -33,7 +33,7 @@ export default class Sparkler
     this.setupGeometry();
     this.setupUVs();
     this.setupAudio();
-    this.setupSparks(radius * 10);
+    this.setupSparks();
     this.setupHandle(radius * 0.5, length * 1.15);
 
     const folder = window.gui.addFolder("Sparkler");
@@ -77,14 +77,16 @@ export default class Sparkler
     this.add(handle);
   }
 
-  private setupSparks(radius: number) {
-    const geometry = new THREE.IcosahedronGeometry(radius * 4, 2);
+  private setupSparks() {
+    const radius = 1;
+    const detail = 5;
+    const geometry = new THREE.IcosahedronGeometry(radius, detail);
     const resolution = new THREE.Vector2(
       window.innerWidth * Math.min(window.devicePixelRatio, 2),
       window.innerHeight * Math.min(window.devicePixelRatio, 2)
     );
-    const texture = new THREE.TextureLoader().load("./particles/4.png");
-    const sparks = new Sparks(geometry, 0.2, resolution, texture, sparksColor);
+    const texture = new THREE.TextureLoader().load("./particles/6.png");
+    const sparks = new Sparks(geometry, 0.2, resolution, texture);
 
     this.sparks = sparks;
     this.add(this.sparks);
@@ -93,6 +95,7 @@ export default class Sparkler
     const folder = window.gui.addFolder("Sparks");
     folder.addColor(this.sparks.material, "color");
     folder.add(this.sparks.material, "size", 0, 1, 0.01);
+    folder.add(this.sparks.material, "radius", 0.5, 5, 0.1);
     folder.add(this.sparks.material, "duration", 0, 0.1, 0.001);
   }
 

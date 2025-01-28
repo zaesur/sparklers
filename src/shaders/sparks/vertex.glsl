@@ -2,6 +2,7 @@ uniform float uSize;
 uniform vec2 uResolution;
 uniform float uProgress;
 uniform float uDuration;
+uniform float uRadius;
 attribute float aSize;
 attribute float aOffset;
 attribute float aRotation;
@@ -34,12 +35,14 @@ float calcualateIndiviualProgress(float globalProgress, float start, float durat
 
 void main()
 {
+    // Pass rotation to the fragment shader.
     vRotation = aRotation;
+
     float duration = uDuration;
     float individualProgress = calcualateIndiviualProgress(uProgress, aOffset, duration);
 
     float targetSize = uSize * aSize;
-    vec3 targetPosition = position;
+    vec3 targetPosition = position * uRadius;
 
     // Explode
     targetPosition *= individualProgress * aSize;

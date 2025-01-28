@@ -5,6 +5,7 @@ import fragmentShader from "../../shaders/sparks/fragment.glsl";
 type Params = {
   size?: number;
   color?: THREE.ColorRepresentation;
+  radius?: number;
   duration?: number;
 };
 
@@ -12,7 +13,7 @@ class SparksMaterial extends THREE.ShaderMaterial {
   constructor(
     resolution: THREE.Vector2,
     texture: THREE.Texture,
-    { size = 1, color = "white", duration = 0.003 }: Params
+    { size = 1, radius = 1, color = "white", duration = 0.003 }: Params
   ) {
     super({
       transparent: true,
@@ -22,6 +23,7 @@ class SparksMaterial extends THREE.ShaderMaterial {
       fragmentShader,
       uniforms: {
         uSize: new THREE.Uniform(size),
+        uRadius: new THREE.Uniform(radius),
         uResolution: new THREE.Uniform(resolution),
         uDuration: new THREE.Uniform(duration),
         uTexture: new THREE.Uniform(texture),
@@ -47,6 +49,13 @@ class SparksMaterial extends THREE.ShaderMaterial {
   }
   set size(value: number) {
     this.uniforms.uSize.value = value;
+  }
+
+  get radius() {
+    return this.uniforms.uRadius.value;
+  }
+  set radius(value: number) {
+    this.uniforms.uRadius.value = value;
   }
 
   get duration() {
