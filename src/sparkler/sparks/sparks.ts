@@ -8,9 +8,8 @@ class Sparks extends THREE.Points<THREE.BufferGeometry, SparksMaterial> {
     size: number,
     resolution: THREE.Vector2,
     texture: THREE.Texture,
-    color = new THREE.Color("white")
   ) {
-    super(geometry, new SparksMaterial(size, resolution, texture, color));
+    super(geometry, new SparksMaterial(resolution, texture, { size }));
     this.initialize();
   }
   private initalizeAttributes() {

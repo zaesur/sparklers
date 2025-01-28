@@ -3,12 +3,10 @@ import Sparkler from "./sparkler/sparkler";
 import { PostprocessingRenderer as Renderer } from "./renderer";
 
 const constants = {
-  interpolationSpeed: 0.3,
+  interpolationSpeed: 0.1,
   trackMouse: false,
   animate: true,
 };
-
-let t = 0;
 
 class Experience {
   private renderer!: Renderer;

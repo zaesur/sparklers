@@ -2,8 +2,18 @@ import * as THREE from "three";
 import vertexShader from "../../shaders/sparks/vertex.glsl";
 import fragmentShader from "../../shaders/sparks/fragment.glsl";
 
+type Params = {
+  size?: number;
+  color?: THREE.ColorRepresentation;
+  duration?: number;
+};
+
 class SparksMaterial extends THREE.ShaderMaterial {
-  constructor(size: number, resolution: THREE.Vector2, texture: THREE.Texture, color = new THREE.Color("white")) {
+  constructor(
+    resolution: THREE.Vector2,
+    texture: THREE.Texture,
+    { size = 1, color = "white", duration = 0.003 }: Params
+  ) {
     super({
       transparent: true,
       depthWrite: false,
@@ -13,10 +23,10 @@ class SparksMaterial extends THREE.ShaderMaterial {
       uniforms: {
         uSize: new THREE.Uniform(size),
         uResolution: new THREE.Uniform(resolution),
-        uDuration: new THREE.Uniform(0.007),
+        uDuration: new THREE.Uniform(duration),
         uTexture: new THREE.Uniform(texture),
-        uColor: new THREE.Uniform(color),
-        uProgress: new THREE.Uniform(0)
+        uColor: new THREE.Uniform(new THREE.Color(color)),
+        uProgress: new THREE.Uniform(0),
       },
     });
   }

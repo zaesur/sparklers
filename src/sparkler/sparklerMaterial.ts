@@ -2,18 +2,36 @@ import * as THREE from "three";
 import vertexShader from "../shaders/sparkler/vertex.glsl";
 import fragmentShader from "../shaders/sparkler/fragment.glsl";
 
+type Params = {
+  baseColor?: THREE.ColorRepresentation;
+  burnColor?: THREE.ColorRepresentation;
+  trailColor?: THREE.ColorRepresentation;
+  burntColor?: THREE.ColorRepresentation;
+  burnIntensity?: number;
+  trailWidth?: number;
+  burnWidth?: number;
+};
+
 class SparklerMaterial extends THREE.ShaderMaterial {
-  constructor() {
+  constructor({
+    baseColor = "lightgrey",
+    burnColor = "yellow",
+    trailColor = "red",
+    burntColor = "grey",
+    burnIntensity = 1.5,
+    trailWidth = 0.3,
+    burnWidth = 0.05,
+  }: Params = {}) {
     super({
       uniforms: {
-        uBaseColor: new THREE.Uniform(new THREE.Color("lightgrey")),
-        uBurnColor: new THREE.Uniform(new THREE.Color("yellow")),
-        uTrailColor: new THREE.Uniform(new THREE.Color("red")),
-        uBurntColor: new THREE.Uniform(new THREE.Color("grey")),
-        uBurnIntensity: new THREE.Uniform(1),
+        uBaseColor: new THREE.Uniform(new THREE.Color(baseColor)),
+        uBurnColor: new THREE.Uniform(new THREE.Color(burnColor)),
+        uTrailColor: new THREE.Uniform(new THREE.Color(trailColor)),
+        uBurntColor: new THREE.Uniform(new THREE.Color(burntColor)),
+        uBurnIntensity: new THREE.Uniform(burnIntensity),
         uProgress: new THREE.Uniform(0),
-        uTrailWidth: new THREE.Uniform(0.3),
-        uBurnWidth: new THREE.Uniform(0.05),
+        uTrailWidth: new THREE.Uniform(trailWidth),
+        uBurnWidth: new THREE.Uniform(burnWidth),
       },
       vertexShader,
       fragmentShader,
@@ -54,7 +72,7 @@ class SparklerMaterial extends THREE.ShaderMaterial {
   set burnColor(value: THREE.Color) {
     this.uniforms.uBurnColor.value = value;
   }
-  
+
   get trailColor() {
     return this.uniforms.uTrailColor.value;
   }

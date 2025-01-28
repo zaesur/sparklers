@@ -8,6 +8,19 @@ import {
   SMAAPass,
 } from "three/examples/jsm/Addons.js";
 
+const defaultSettings = {
+  afterImage: {
+    enabled: true,
+    damp: 0.45,
+  },
+  bloom: {
+    enabled: true,
+    strength: 2,
+    radius: 0.5,
+    threshold: 0.85,
+  },
+};
+
 class Renderer {
   private composer: EffectComposer;
   private folder = window.gui.addFolder("Post Processing");
@@ -41,9 +54,9 @@ class Renderer {
   setupBloomPass() {
     const bloomPass = new UnrealBloomPass(
       new THREE.Vector2(window.innerWidth, window.innerHeight),
-      1.5,
-      0.4,
-      0.85
+      defaultSettings.bloom.strength,
+      defaultSettings.bloom.radius,
+      defaultSettings.bloom.threshold
     );
     this.composer.addPass(bloomPass);
 
@@ -69,7 +82,7 @@ class Renderer {
   }
 
   setupAfterImagePass() {
-    const afterImagePass = new AfterimagePass(0.1);
+    const afterImagePass = new AfterimagePass(defaultSettings.afterImage.damp);
     this.composer.addPass(afterImagePass);
 
     this.folder.add(afterImagePass, "enabled").name("After Image enabled");
