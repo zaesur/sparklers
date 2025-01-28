@@ -3,6 +3,7 @@ import { Updateable } from "./updateable.d";
 import { ensureArray } from "../utils";
 import Sparks from "./sparks";
 import SparklerMaterial from "./sparklerMaterial";
+import { SimplexNoise } from "three/examples/jsm/Addons.js";
 export default class Sparkler
   extends THREE.Mesh<THREE.BufferGeometry, SparklerMaterial>
   implements Updateable
@@ -16,16 +17,15 @@ export default class Sparkler
   private static init = (
     radius: number,
     length: number,
-    segments: number
   ): [THREE.BufferGeometry, SparklerMaterial] => {
     return [
-      new THREE.CylinderGeometry(radius, radius, length, segments),
+      new THREE.CylinderGeometry(radius, radius, length, 15, 100),
       new SparklerMaterial(),
     ];
   };
 
-  constructor(radius: number, length: number, segments: number) {
-    super(...Sparkler.init(radius, length, segments));
+  constructor(radius: number, length: number) {
+    super(...Sparkler.init(radius, length));
     this.length = length;
     this.setupGeometry();
     this.setupUVs();
@@ -46,6 +46,35 @@ export default class Sparkler
 
   private setupGeometry() {
     this.geometry.translate(0, this.length / 2, 0);
+
+    const frequency = 75;
+    const amplitude = 0.01;
+    const simplex = new SimplexNoise();
+
+    const uv = this.geometry.attributes.uv;
+    const normal = this.geometry.attributes.normal;
+    const position = this.geometry.attributes.position;
+
+    for (let i = 0; i < position.count; i++) {
+      const x = position.getX(i);
+      const y = position.getY(i);
+      const z = position.getZ(i);
+
+      const normalX = normal.getX(i);
+      const normalZ = normal.getZ(i);
+      const uvY = uv.getY(i);
+
+      // Apply noise only if the vertex belongs to the side
+      if (uvY > 0 && uvY < 1) {
+        const noise =
+          simplex.noise3d(x * frequency, y * frequency, z * frequency) *
+          amplitude;
+        position.setX(i, x + noise * normalX);
+        position.setZ(i, z + noise * normalZ);
+      }
+    }
+
+    this.geometry.computeVertexNormals();
   }
 
   private setupUVs() {
@@ -68,7 +97,7 @@ export default class Sparkler
       16
     );
     const material = new THREE.MeshBasicMaterial({
-      color: "lightgrey",
+      color: "grey",
     });
     const handle = new THREE.Mesh(geometry, material);
     this.add(handle);
