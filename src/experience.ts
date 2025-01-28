@@ -53,7 +53,7 @@ class Experience {
   }
 
   private setupSparkler() {
-    this.sparkler = new Sparkler(0.025, 3, 32);
+    this.sparkler = new Sparkler(0.025, 3);
     this.sparkler.position.set(0, -1, 0);
     this.scene.add(this.sparkler);
   }
