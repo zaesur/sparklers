@@ -44,10 +44,6 @@ class Sparks extends THREE.Points<THREE.BufferGeometry, SparksMaterial> {
     this.initalizeAttributes();
   }
 
-  update(t: number) {
-    this.material.progress = t;
-  } 
-
   dispose() {
     for (const material of ensureArray(this.material)) {
       material.dispose();
