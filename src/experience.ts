@@ -15,7 +15,8 @@ class Experience {
   private scene!: THREE.Scene;
   private camera!: THREE.PerspectiveCamera;
   private sparkler!: Sparkler;
-  private mouse: THREE.Vector2 = new THREE.Vector2();
+  private clock = new THREE.Clock();
+  private mouse = new THREE.Vector2();
 
   constructor(domElement: HTMLElement) {
     this.setupCamera();
@@ -60,6 +61,7 @@ class Experience {
   }
 
   private setupEventListeners() {
+    const canvas = document.getElementById("canvas") as HTMLCanvasElement;
     window.addEventListener("resize", () => {
       const width = window.innerWidth;
       const height = window.innerHeight;
@@ -71,9 +73,17 @@ class Experience {
       this.sparkler.setResolution(width, height);
     });
 
-    window.addEventListener("mousemove", (event) => {
+    canvas.addEventListener("mousemove", (event) => {
       this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
       this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    });
+
+    canvas.addEventListener("mousedown", () => {
+      if (this.sparkler.isSparkling) {
+        this.sparkler.stop();
+      } else {
+        this.sparkler.play();
+      }
     });
   }
 
@@ -110,23 +120,27 @@ class Experience {
     this.sparkler.rotation.setFromQuaternion(sourceQuaternion);
 
     // Position
-    this.sparkler.position.lerp({x: this.mouse.x * 3, y: -1 + this.mouse.y, z: 0}, constants.interpolationSpeed);
+    this.sparkler.position.lerp(
+      { x: this.mouse.x * 3, y: -1 + this.mouse.y, z: 0 },
+      constants.interpolationSpeed
+    );
   };
 
-  private update = () => {
+  private update = (delta: number) => {
     if (constants.trackMouse) {
       this.followMouse();
     }
 
     if (constants.animate) {
-      this.sparkler.update((t++ / 500) % 1);
+      this.sparkler.update(delta);
     }
   };
 
   private render = () => {
+    const delta = this.clock.getDelta();
+    this.update(delta);
+    this.renderer.render(delta);
     requestAnimationFrame(this.render);
-    this.update();
-    this.renderer.render();
   };
 }
 

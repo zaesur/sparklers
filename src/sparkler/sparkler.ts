@@ -6,9 +6,14 @@ import SparklerMaterial from "./sparklerMaterial";
 
 const sparksColor = new THREE.Color().setHSL(0.1, 0.7, 0.5);
 
-export default class Sparkler extends THREE.Mesh<THREE.BufferGeometry, SparklerMaterial> implements Updateable {
+export default class Sparkler
+  extends THREE.Mesh<THREE.BufferGeometry, SparklerMaterial>
+  implements Updateable
+{
   private length: number;
   private sparks!: Sparks;
+  duration = 20;
+  isSparkling = false;
 
   private static init = (
     radius: number,
@@ -29,6 +34,7 @@ export default class Sparkler extends THREE.Mesh<THREE.BufferGeometry, SparklerM
     this.setupSparks(radius * 10);
 
     const folder = window.gui.addFolder("Sparkler");
+    folder.add(this, "duration", 1, 100, 1);
     folder.addColor(this.material, "baseColor");
     folder.add(this.material, "burnWidth", 0, 0.2, 0.01);
     folder.addColor(this.material, "burnColor").setValue(sparksColor);
@@ -76,11 +82,28 @@ export default class Sparkler extends THREE.Mesh<THREE.BufferGeometry, SparklerM
     this.sparks.material.resolution.set(width, height);
   }
 
-  update(t: number) {
-    // Map the interval [0, 1] along the length of the sparkler.
+  play() {
+    this.isSparkling = true;
+    this.sparks.visible = true;
+    this.material.progress = 0;
+    this.update(0);
+  }
+
+  stop() {
+    this.isSparkling = false;
+    this.sparks.visible = false;
+    this.material.progress = 0;
+  }
+
+  update(delta: number) {
+    if (!this.isSparkling || this.material.progress > 1) {
+      return this.stop()
+    }
+
+    const t = this.material.progress + delta / this.duration;
     this.material.progress = t;
+    this.sparks.material.progress = t;
     this.sparks.position.y = this.length * (1 - t);
-    this.sparks.update(t);
   }
 
   dispose() {
