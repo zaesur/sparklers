@@ -6,8 +6,8 @@ type Params = {
   baseColor?: THREE.ColorRepresentation;
   burnColor?: THREE.ColorRepresentation;
   trailColor?: THREE.ColorRepresentation;
-  burntColor?: THREE.ColorRepresentation;
   burnIntensity?: number;
+  darkenFactor?: number;
   trailWidth?: number;
   burnWidth?: number;
 };
@@ -17,8 +17,8 @@ class SparklerMaterial extends THREE.ShaderMaterial {
     baseColor = "lightgrey",
     burnColor = "yellow",
     trailColor = "red",
-    burntColor = "grey",
     burnIntensity = 1.5,
+    darkenFactor = 0.1,
     trailWidth = 0.3,
     burnWidth = 0.05,
   }: Params = {}) {
@@ -27,8 +27,8 @@ class SparklerMaterial extends THREE.ShaderMaterial {
         uBaseColor: new THREE.Uniform(new THREE.Color(baseColor)),
         uBurnColor: new THREE.Uniform(new THREE.Color(burnColor)),
         uTrailColor: new THREE.Uniform(new THREE.Color(trailColor)),
-        uBurntColor: new THREE.Uniform(new THREE.Color(burntColor)),
         uBurnIntensity: new THREE.Uniform(burnIntensity),
+        uDarkenFactor: new THREE.Uniform(darkenFactor),
         uProgress: new THREE.Uniform(0),
         uTrailWidth: new THREE.Uniform(trailWidth),
         uBurnWidth: new THREE.Uniform(burnWidth),
@@ -80,18 +80,18 @@ class SparklerMaterial extends THREE.ShaderMaterial {
     this.uniforms.uTrailColor.value = value;
   }
 
-  get burntColor() {
-    return this.uniforms.uBurntColor.value;
-  }
-  set burntColor(value: THREE.Color) {
-    this.uniforms.uBurntColor.value = value;
-  }
-
   get burnIntensity() {
     return this.uniforms.uBurnIntensity.value;
   }
   set burnIntensity(value: number) {
     this.uniforms.uBurnIntensity.value = value;
+  }
+
+  get darkenFactor() {
+    return this.uniforms.uDarkenFactor.value;
+  }
+  set darkenFactor(value: number) {
+    this.uniforms.uDarkenFactor.value = value;
   }
 }
 

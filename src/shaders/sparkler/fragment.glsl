@@ -2,10 +2,10 @@ uniform float uProgress;
 uniform vec3 uBaseColor;
 uniform vec3 uBurnColor;
 uniform vec3 uTrailColor;
-uniform vec3 uBurntColor;
 uniform float uTrailWidth;
 uniform float uBurnWidth;
 uniform float uBurnIntensity;
+uniform float uDarkenFactor;
 varying vec2 vUv;
 
 void main() {
@@ -13,7 +13,7 @@ void main() {
 
     // Burnt
     float hasBurned = step(vUv.y, uProgress);
-    color = mix(color, uBurntColor, hasBurned);
+    color = mix(color, color * uDarkenFactor, hasBurned);
 
     // Trail
     float isTrail = hasBurned * smoothstep(uProgress - uTrailWidth, uProgress, vUv.y);

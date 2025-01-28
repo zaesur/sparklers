@@ -3,9 +3,6 @@ import { Updateable } from "./updateable.d";
 import { ensureArray } from "../utils";
 import Sparks from "./sparks";
 import SparklerMaterial from "./sparklerMaterial";
-
-const sparksColor = new THREE.Color().setHSL(0.1, 0.7, 0.5);
-
 export default class Sparkler
   extends THREE.Mesh<THREE.BufferGeometry, SparklerMaterial>
   implements Updateable
@@ -39,12 +36,12 @@ export default class Sparkler
     const folder = window.gui.addFolder("Sparkler");
     folder.add(this, "duration", 1, 100, 1);
     folder.addColor(this.material, "baseColor");
-    folder.add(this.material, "burnWidth", 0, 0.2, 0.01);
-    folder.add(this.material, "burnIntensity", 0, 5, 0.1);
-    folder.addColor(this.material, "burnColor").setValue(sparksColor);
-    folder.add(this.material, "trailWidth", 0, 0.5, 0.01);
+    folder.addColor(this.material, "burnColor");
     folder.addColor(this.material, "trailColor");
-    folder.addColor(this.material, "burntColor");
+    folder.add(this.material, "burnWidth", 0, 0.2, 0.01);
+    folder.add(this.material, "trailWidth", 0, 0.5, 0.01);
+    folder.add(this.material, "burnIntensity", 0, 5, 0.1);
+    folder.add(this.material, "darkenFactor", 0.01, 0.5, 0.01);
   }
 
   private setupGeometry() {
