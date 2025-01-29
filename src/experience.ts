@@ -2,6 +2,7 @@ import * as THREE from "three";
 import Sparkler from "./sparkler/sparkler";
 import { PostprocessingRenderer as Renderer } from "./renderer";
 import { lerpRotation } from "./utils";
+import { EXRLoader } from "three/examples/jsm/Addons.js";
 
 const constants = {
   interpolationSpeed: 5,
@@ -21,6 +22,7 @@ class Experience {
     this.setupCamera();
     this.setupRenderer(domElement);
     this.setupSparkler();
+    this.setupLights();
     this.setupEventListeners();
     this.setupGUI();
     this.render();
@@ -59,6 +61,23 @@ class Experience {
     this.sparkler = new Sparkler(0.025, 3);
     this.sparkler.position.set(0, -1, 0);
     this.scene.add(this.sparkler);
+  }
+
+  private setupLights() {
+    const folder = window.gui.addFolder("Lights");
+
+    new EXRLoader().load("hansaplatz_2k.exr", (texture) => {
+      texture.mapping = THREE.EquirectangularReflectionMapping;
+      this.scene.background = texture;
+      this.scene.backgroundIntensity = 0.1;
+      this.scene.backgroundBlurriness = 0.6;
+      this.scene.environment = texture;
+      this.scene.environmentIntensity = 0.6;
+
+      folder.add(this.scene, "backgroundIntensity", 0, 1, 0.01).name("Background Intensity");
+      folder.add(this.scene, "environmentIntensity", 0, 1, 0.01).name("Environment Intensity");
+      folder.add(this.scene, "backgroundBlurriness", 0, 1, 0.01).name("Background Blurriness");
+    });
   }
 
   private setupEventListeners() {

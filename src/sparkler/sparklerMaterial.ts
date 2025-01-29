@@ -86,4 +86,137 @@ class SparklerMaterial extends THREE.ShaderMaterial {
   }
 }
 
-export default SparklerMaterial;
+class SparklerStandardMaterial extends THREE.MeshStandardMaterial {
+  constructor({
+    baseColor = "dimgrey",
+    burnColor = "cornsilk",
+    trailColor = "orangered",
+    burnIntensity = 1.5,
+    darkenFactor = 0.1,
+    trailWidth = 0.3,
+    burnWidth = 0.05,
+  }: Params = {}) {
+    super({ color: baseColor, roughness: 0.95, metalness: 0 });
+
+    this.userData.progress = new THREE.Uniform(0);
+    this.userData.burnColor = new THREE.Uniform(new THREE.Color(burnColor));
+    this.userData.trailColor = new THREE.Uniform(new THREE.Color(trailColor));
+    this.userData.burnIntensity = new THREE.Uniform(burnIntensity);
+    this.userData.darkenFactor = new THREE.Uniform(darkenFactor);
+    this.userData.trailWidth = new THREE.Uniform(trailWidth);
+    this.userData.burnWidth = new THREE.Uniform(burnWidth);
+
+    this.onBeforeCompile = (shader) => {
+      shader.uniforms.uProgress = this.userData.progress;
+      shader.uniforms.uBurnColor = this.userData.burnColor;
+      shader.uniforms.uTrailColor = this.userData.trailColor;
+      shader.uniforms.uBurnIntensity = this.userData.burnIntensity;
+      shader.uniforms.uDarkenFactor = this.userData.darkenFactor;
+      shader.uniforms.uTrailWidth = this.userData.trailWidth;
+      shader.uniforms.uBurnWidth = this.userData.burnWidth;
+
+      // Inject varying to pass UVs to the fragment shader
+      shader.vertexShader = `
+          varying vec2 vUv;
+          ${shader.vertexShader}
+      `.replace(
+        `#include <uv_vertex>`,
+        `
+          #include <uv_vertex>
+          vUv = uv;
+        `
+      );
+
+      // Modify the fragment shader
+      shader.fragmentShader = `
+          uniform float uProgress;
+          uniform vec3 uBurnColor;
+          uniform vec3 uTrailColor;
+          uniform float uBurnWidth;
+          uniform float uTrailWidth;
+          uniform float uDarkenFactor;
+          uniform float uBurnIntensity;
+          varying vec2 vUv;
+          ${shader.fragmentShader}
+      `.replace(
+        `#include <map_fragment>`,
+        `
+          vec3 color = diffuseColor.rgb;
+
+          // Darken everything below uProgress.
+          float hasBurned = step(vUv.y, uProgress);
+          color = mix(color, color * uDarkenFactor, hasBurned);
+  
+          // Add a glowing trail.
+          float isTrail = hasBurned * smoothstep(uProgress - uTrailWidth, uProgress, vUv.y);
+          diffuseColor.rgb = mix(color, uTrailColor, isTrail);
+
+          #include <map_fragment>
+        `
+      );
+
+      shader.fragmentShader = shader.fragmentShader.replace(
+        "#include <emissivemap_fragment>",
+        `
+          float isBurning = hasBurned * smoothstep(uProgress - uBurnWidth, uProgress, vUv.y);
+          
+          float smallFlickerFactor = (2.0 + sin(uProgress * 999.0)) * 0.5;
+          float largeFlickerFactor = (2.0 + sin(uProgress * 137.0)) * 0.5;
+          float flickerFactor = smallFlickerFactor * largeFlickerFactor * uBurnIntensity;
+
+          totalEmissiveRadiance = mix(totalEmissiveRadiance, uBurnColor * flickerFactor, isBurning);
+          #include <emissivemap_fragment>
+        `
+      );
+    };
+  }
+
+  get progress() {
+    return this.userData.progress.value;
+  }
+  set progress(value: number) {
+    this.userData.progress.value = value;
+  }
+
+  get baseColor() {
+    return this.color;
+  }
+
+  get trailColor() {
+    return this.userData.trailColor.value;
+  }
+
+  get burnColor() {
+    return this.userData.burnColor.value;
+  }
+
+  get burnWidth() {
+    return this.userData.burnWidth.value;
+  }
+  set burnWidth(value: number) {
+    this.userData.burnWidth.value = value;
+  }
+
+  get burnIntensity() {
+    return this.userData.burnIntensity.value;
+  }
+  set burnIntensity(value: number) {
+    this.userData.burnIntensity.value = value;
+  }
+
+  get darkenFactor() {
+    return this.userData.darkenFactor.value;
+  }
+  set darkenFactor(value: number) {
+    this.userData.darkenFactor.value = value;
+  }
+
+  get trailWidth() {
+    return this.userData.trailWidth.value;
+  }
+  set trailWidth(value: number) {
+    this.userData.trailWidth.value = value;
+  }
+}
+
+export default SparklerStandardMaterial;

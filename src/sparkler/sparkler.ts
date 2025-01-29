@@ -96,8 +96,10 @@ export default class Sparkler
 
   private setupHandle(radius: number, length: number) {
     const geometry = new THREE.CylinderGeometry(radius, radius, length, 16);
-    const material = new THREE.MeshBasicMaterial({
+    const material = new THREE.MeshStandardMaterial({
       color: "grey",
+      roughness: 0.1,
+      metalness: 1,
     });
     const handle = new THREE.Mesh(geometry, material);
     this.handle = handle;
