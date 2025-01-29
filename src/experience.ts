@@ -1,9 +1,10 @@
 import * as THREE from "three";
 import Sparkler from "./sparkler/sparkler";
 import { PostprocessingRenderer as Renderer } from "./renderer";
+import { lerpRotation } from "./utils";
 
 const constants = {
-  interpolationSpeed: 0.1,
+  interpolationSpeed: 5,
   trackMouse: false,
   animate: true,
 };
@@ -91,9 +92,9 @@ class Experience {
 
     const interpolationSpeed = folder
       .add(constants, "interpolationSpeed")
-      .min(0)
-      .max(1)
-      .step(0.01)
+      .min(1)
+      .max(10)
+      .step(0.1)
       .enable(constants.trackMouse)
       .name("Interpolation Speed");
 
@@ -102,31 +103,29 @@ class Experience {
     });
   }
 
-  private followMouse = () => {
+  private followMouse = (delta: number) => {
+    const alpha = delta * constants.interpolationSpeed;
+
     // Rotation
-    const sourceQuaternion = new THREE.Quaternion().setFromEuler(
-      this.sparkler.rotation
-    );
-    const targetQuaternion = new THREE.Quaternion().setFromEuler(
-      new THREE.Euler(
-        (Math.PI / 4) * (this.mouse.y - 0.5),
-        0,
-        (Math.PI / 2) * -this.mouse.x
+    const rotationX = (Math.PI / 4) * (this.mouse.y - 0.5);
+    const rotationZ = (Math.PI / 2) * -this.mouse.x;
+    this.sparkler.rotation.setFromQuaternion(
+      lerpRotation(
+        this.sparkler.rotation,
+        new THREE.Euler(rotationX, 0, rotationZ),
+        alpha
       )
     );
-    sourceQuaternion.slerp(targetQuaternion, constants.interpolationSpeed);
-    this.sparkler.rotation.setFromQuaternion(sourceQuaternion);
 
     // Position
-    this.sparkler.position.lerp(
-      { x: this.mouse.x * 3, y: -1 + this.mouse.y, z: 0 },
-      constants.interpolationSpeed
-    );
+    const positionX = this.mouse.x * 3;
+    const positionY = -1 + this.mouse.y;
+    this.sparkler.position.lerp({ x: positionX, y: positionY, z: 0 }, alpha);
   };
 
   private update = (delta: number) => {
     if (constants.trackMouse) {
-      this.followMouse();
+      this.followMouse(delta);
     }
 
     if (constants.animate) {
