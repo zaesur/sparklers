@@ -13,7 +13,7 @@ class SparksMaterial extends THREE.ShaderMaterial {
   constructor(
     resolution: THREE.Vector2,
     texture: THREE.Texture,
-    { size = 1, radius = 1, color = "white", duration = 0.003 }: Params
+    { size = 1, radius = 1, color = "cornsilk", duration = 0.003 }: Params
   ) {
     super({
       transparent: true,
