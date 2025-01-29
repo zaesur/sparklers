@@ -90,6 +90,7 @@ class Experience {
 
   private setupGUI() {
     const folder = window.gui.addFolder("Controls");
+    folder.add(this.sparkler.audioPlayer, "enabled").name("Enable Sound");
     const trackMouse = folder.add(constants, "trackMouse").name("Track Mouse");
 
     const interpolationSpeed = folder

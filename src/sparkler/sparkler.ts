@@ -4,14 +4,15 @@ import { ensureArray } from "../utils";
 import Sparks from "./sparks";
 import SparklerMaterial from "./sparklerMaterial";
 import { SimplexNoise } from "three/examples/jsm/Addons.js";
+import AudioPlayer from "../audioPlayer";
 export default class Sparkler
   extends THREE.Mesh<THREE.BufferGeometry, SparklerMaterial>
   implements Updateable
 {
   private length: number;
   private sparks!: Sparks;
-  private sound!: HTMLAudioElement;
   private handle!: THREE.Mesh;
+  audioPlayer!: AudioPlayer;
   duration = 20;
   isSparkling = false;
 
@@ -126,7 +127,7 @@ export default class Sparkler
   }
 
   setupAudio() {
-    this.sound = new Audio("sparkler_sound.mp3");
+    this.audioPlayer = new AudioPlayer("sparkler.mp3");
   }
 
   setResolution(width: number, height: number) {
@@ -138,15 +139,14 @@ export default class Sparkler
     this.sparks.visible = true;
     this.material.progress = 0;
     this.update(0);
-    this.sound.currentTime = 3;
-    this.sound.play();
+    this.audioPlayer.play();
   }
 
   stop() {
     this.isSparkling = false;
     this.sparks.visible = false;
     this.material.progress = 0;
-    this.sound.pause();
+    this.audioPlayer.stop();
   }
 
   update(delta: number) {
