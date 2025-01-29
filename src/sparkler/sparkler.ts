@@ -1,10 +1,10 @@
 import * as THREE from "three";
 import { Updateable } from "./updateable.d";
 import { ensureArray } from "../utils";
-import Sparks from "./sparks";
 import SparklerMaterial from "./sparklerMaterial";
 import { SimplexNoise } from "three/examples/jsm/Addons.js";
 import AudioPlayer from "../audioPlayer";
+import Sparks from "../sparks";
 export default class Sparkler
   extends THREE.Mesh<THREE.BufferGeometry, SparklerMaterial>
   implements Updateable

@@ -1,6 +1,6 @@
 import * as THREE from "three";
-import vertexShader from "../../shaders/sparks/vertex.glsl";
-import fragmentShader from "../../shaders/sparks/fragment.glsl";
+import vertexShader from "../shaders/sparks/vertex.glsl";
+import fragmentShader from "../shaders/sparks/fragment.glsl";
 
 type Params = {
   size?: number;

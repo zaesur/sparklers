@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import SparksMaterial from "./sparksMaterial";
-import { ensureArray } from "../../utils";
+import { ensureArray } from "../utils";
 
 class Sparks extends THREE.Points<THREE.BufferGeometry, SparksMaterial> {
   constructor(
