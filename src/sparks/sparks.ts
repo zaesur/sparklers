@@ -5,11 +5,10 @@ import { ensureArray } from "../utils";
 class Sparks extends THREE.Points<THREE.BufferGeometry, SparksMaterial> {
   constructor(
     geometry: THREE.BufferGeometry,
-    size: number,
     resolution: THREE.Vector2,
     texture: THREE.Texture,
   ) {
-    super(geometry, new SparksMaterial(resolution, texture, { size }));
+    super(geometry, new SparksMaterial(resolution, texture, { size: 0.6, radius: 1.2 }));
     this.initialize();
   }
   private initalizeAttributes() {

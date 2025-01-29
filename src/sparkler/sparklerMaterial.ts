@@ -12,7 +12,7 @@ type Params = {
   burnWidth?: number;
 };
 
-class SparklerMaterial extends THREE.ShaderMaterial {
+export class SparklerMaterial extends THREE.ShaderMaterial {
   constructor({
     baseColor = "dimgrey",
     burnColor = "cornsilk",

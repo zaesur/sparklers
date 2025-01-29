@@ -6,7 +6,7 @@ import { EXRLoader } from "three/examples/jsm/Addons.js";
 
 const constants = {
   interpolationSpeed: 5,
-  trackMouse: false,
+  trackMouse: true,
   animate: true,
 };
 

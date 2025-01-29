@@ -115,7 +115,7 @@ export default class Sparkler
       window.innerHeight * Math.min(window.devicePixelRatio, 2)
     );
     const texture = new THREE.TextureLoader().load("./particles/6.png");
-    const sparks = new Sparks(geometry, 0.2, resolution, texture);
+    const sparks = new Sparks(geometry, resolution, texture);
 
     this.sparks = sparks;
     this.add(this.sparks);
