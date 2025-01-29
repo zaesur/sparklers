@@ -43,7 +43,8 @@ class Renderer {
   }
 
   setupOutputPass() {
-    this.composer.addPass(new OutputPass());
+    const outputPass = new OutputPass();
+    this.composer.addPass(outputPass);
   }
 
   setupAAPass() {

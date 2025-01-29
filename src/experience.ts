@@ -37,15 +37,17 @@ class Experience {
   }
 
   private setupRenderer(domElement: HTMLElement) {
+    const webGL = new THREE.WebGLRenderer({
+      canvas: domElement,
+      antialias: true,
+    });
+
+    webGL.outputColorSpace = THREE.SRGBColorSpace;
+    webGL.toneMapping = THREE.ACESFilmicToneMapping;
+    webGL.toneMappingExposure = 1;
+
     this.scene = new THREE.Scene();
-    this.renderer = new Renderer(
-      new THREE.WebGLRenderer({
-        canvas: domElement,
-        antialias: true,
-      }),
-      this.scene,
-      this.camera
-    );
+    this.renderer = new Renderer(webGL, this.scene, this.camera);
     this.renderer.setResolution(
       window.innerWidth,
       window.innerHeight,

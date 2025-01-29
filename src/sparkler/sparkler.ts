@@ -11,12 +11,13 @@ export default class Sparkler
   private length: number;
   private sparks!: Sparks;
   private sound!: HTMLAudioElement;
+  private handle!: THREE.Mesh;
   duration = 20;
   isSparkling = false;
 
   private static init = (
     radius: number,
-    length: number,
+    length: number
   ): [THREE.BufferGeometry, SparklerMaterial] => {
     return [
       new THREE.CylinderGeometry(radius, radius, length, 15, 100),
@@ -35,6 +36,9 @@ export default class Sparkler
 
     const folder = window.gui.addFolder("Sparkler");
     folder.add(this, "duration", 1, 100, 1);
+    folder
+      .addColor(this.handle.material as THREE.MeshBasicMaterial, "color")
+      .name("handleColor");
     folder.addColor(this.material, "baseColor");
     folder.addColor(this.material, "burnColor");
     folder.addColor(this.material, "trailColor");
@@ -90,16 +94,12 @@ export default class Sparkler
   }
 
   private setupHandle(radius: number, length: number) {
-    const geometry = new THREE.CylinderGeometry(
-      radius,
-      radius,
-      length,
-      16
-    );
+    const geometry = new THREE.CylinderGeometry(radius, radius, length, 16);
     const material = new THREE.MeshBasicMaterial({
       color: "grey",
     });
     const handle = new THREE.Mesh(geometry, material);
+    this.handle = handle;
     this.add(handle);
   }
 
@@ -146,12 +146,12 @@ export default class Sparkler
     this.isSparkling = false;
     this.sparks.visible = false;
     this.material.progress = 0;
-    this.sound.pause()
+    this.sound.pause();
   }
 
   update(delta: number) {
     if (!this.isSparkling || this.material.progress > 1) {
-      return this.stop()
+      return this.stop();
     }
 
     const t = this.material.progress + delta / this.duration;
