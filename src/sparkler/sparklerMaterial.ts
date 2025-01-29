@@ -62,22 +62,13 @@ class SparklerMaterial extends THREE.ShaderMaterial {
   get baseColor() {
     return this.uniforms.uBaseColor.value;
   }
-  set baseColor(value: THREE.Color) {
-    this.uniforms.uBaseColor.value = value;
-  }
 
   get burnColor() {
     return this.uniforms.uBurnColor.value;
   }
-  set burnColor(value: THREE.Color) {
-    this.uniforms.uBurnColor.value = value;
-  }
 
   get trailColor() {
     return this.uniforms.uTrailColor.value;
-  }
-  set trailColor(value: THREE.Color) {
-    this.uniforms.uTrailColor.value = value;
   }
 
   get burnIntensity() {

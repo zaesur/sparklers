@@ -68,9 +68,6 @@ class SparksMaterial extends THREE.ShaderMaterial {
   get color() {
     return this.uniforms.uColor.value;
   }
-  set color(value: THREE.Color) {
-    this.uniforms.uColor.value = value;
-  }
 }
 
 export default SparksMaterial;
