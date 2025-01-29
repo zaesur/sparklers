@@ -87,7 +87,7 @@ class SparklerMaterial extends THREE.ShaderMaterial {
 }
 
 class SparklerStandardMaterial extends THREE.MeshStandardMaterial {
-    constructor({
+  constructor({
     baseColor = "dimgrey",
     burnColor = "cornsilk",
     trailColor = "orangered",
@@ -95,8 +95,8 @@ class SparklerStandardMaterial extends THREE.MeshStandardMaterial {
     darkenFactor = 0.1,
     trailWidth = 0.3,
     burnWidth = 0.05,
-  }: Params = {}) { 
-    super({ color: baseColor });
+  }: Params = {}) {
+    super({ color: baseColor, roughness: 0.95, metalness: 0 });
 
     this.userData.progress = new THREE.Uniform(0);
     this.userData.burnColor = new THREE.Uniform(new THREE.Color(burnColor));
@@ -141,19 +141,15 @@ class SparklerStandardMaterial extends THREE.MeshStandardMaterial {
       `.replace(
         `#include <map_fragment>`,
         `
+          vec3 color = diffuseColor.rgb;
+
           // Darken everything below uProgress.
           float hasBurned = step(vUv.y, uProgress);
-          vec3 burnedColor = 
-            mix(diffuseColor.rgb, diffuseColor.rgb * uDarkenFactor, hasBurned);
+          color = mix(color, color * uDarkenFactor, hasBurned);
   
-          // Add a burning band.
-          float bandStart = uProgress - uBurnWidth * 0.9;
-          float bandEnd = uProgress + uBurnWidth * 0.1;
-          float blendFactor =
-            smoothstep(bandStart, uProgress, vUv.y) * 
-            smoothstep(bandEnd, uProgress, vUv.y);
-          
-          diffuseColor.rgb = mix(burnedColor, uTrailColor, blendFactor);
+          // Add a glowing trail.
+          float isTrail = hasBurned * smoothstep(uProgress - uTrailWidth, uProgress, vUv.y);
+          diffuseColor.rgb = mix(color, uTrailColor, isTrail);
 
           #include <map_fragment>
         `
@@ -162,16 +158,13 @@ class SparklerStandardMaterial extends THREE.MeshStandardMaterial {
       shader.fragmentShader = shader.fragmentShader.replace(
         "#include <emissivemap_fragment>",
         `
-          float emissiveBandStart = uProgress - uTrailWidth / 2.0;
-          float emissiveBandEnd = uProgress + uTrailWidth / 2.0;
-          float emissiveBlendFactor =
-            smoothstep(emissiveBandStart, uProgress, vUv.y) *
-            smoothstep(emissiveBandEnd, uProgress, vUv.y);
+          float isBurning = hasBurned * smoothstep(uProgress - uBurnWidth, uProgress, vUv.y);
           
-          float progress = 10.0 * uProgress;
-          float flickerFactor = (2.0 + sin(progress * 7.0)) * (2.0 + sin(progress * 17.0)) / 3.0;
-          vec3 burnColor = uBurnColor * flickerFactor;
-          totalEmissiveRadiance = mix(totalEmissiveRadiance, burnColor, emissiveBlendFactor);
+          float smallFlickerFactor = (2.0 + sin(uProgress * 999.0)) * 0.5;
+          float largeFlickerFactor = (2.0 + sin(uProgress * 137.0)) * 0.5;
+          float flickerFactor = smallFlickerFactor * largeFlickerFactor * uBurnIntensity;
+
+          totalEmissiveRadiance = mix(totalEmissiveRadiance, uBurnColor * flickerFactor, isBurning);
           #include <emissivemap_fragment>
         `
       );
