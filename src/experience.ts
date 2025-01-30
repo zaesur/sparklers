@@ -7,7 +7,6 @@ import { EXRLoader } from "three/examples/jsm/Addons.js";
 const constants = {
   interpolationSpeed: 5,
   trackMouse: true,
-  animate: true,
 };
 
 class Experience {
@@ -74,9 +73,15 @@ class Experience {
       this.scene.environment = texture;
       this.scene.environmentIntensity = 0.6;
 
-      folder.add(this.scene, "backgroundIntensity", 0, 1, 0.01).name("Background Intensity");
-      folder.add(this.scene, "environmentIntensity", 0, 1, 0.01).name("Environment Intensity");
-      folder.add(this.scene, "backgroundBlurriness", 0, 1, 0.01).name("Background Blurriness");
+      folder
+        .add(this.scene, "backgroundIntensity", 0, 1, 0.01)
+        .name("Background Intensity");
+      folder
+        .add(this.scene, "environmentIntensity", 0, 1, 0.01)
+        .name("Environment Intensity");
+      folder
+        .add(this.scene, "backgroundBlurriness", 0, 1, 0.01)
+        .name("Background Blurriness");
     });
   }
 
@@ -143,6 +148,12 @@ class Experience {
     const positionX = this.mouse.x * 3;
     const positionY = -1 + this.mouse.y;
     this.sparkler.position.lerp({ x: positionX, y: positionY, z: 0 }, alpha);
+
+    // Camera
+    const cameraX = this.mouse.x * -0.5;
+    const cameraY = this.mouse.y * -0.5;
+    this.camera.position.lerp({ x: cameraX, y: cameraY, z: 5 }, alpha);
+    this.camera.lookAt(0, 0, 0);
   };
 
   private update = (delta: number) => {
@@ -150,9 +161,7 @@ class Experience {
       this.followMouse(delta);
     }
 
-    if (constants.animate) {
-      this.sparkler.update(delta);
-    }
+    this.sparkler.update(delta);
   };
 
   private render = () => {
