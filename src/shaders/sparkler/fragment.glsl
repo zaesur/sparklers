@@ -19,12 +19,16 @@ void main() {
     float isTrail = hasBurned * smoothstep(uProgress - uTrailWidth, uProgress, vUv.y);
     color = mix(color, uTrailColor, isTrail);
 
+    csm_DiffuseColor = vec4(color, 1.0);
+
     // Burn
     float isBurning = hasBurned * smoothstep(uProgress - uBurnWidth, uProgress, vUv.y);
     color = mix(color, uBurnColor * uBurnIntensity, isBurning);
 
-    gl_FragColor = vec4(color, 1.0);
+    float smallFlickerFactor = (2.0 + sin(uProgress * 999.0)) * 0.5;
+    float largeFlickerFactor = (2.0 + sin(uProgress * 137.0)) * 0.5;
+    float flickerFactor = smallFlickerFactor * largeFlickerFactor * uBurnIntensity;
 
-    #include <tonemapping_fragment>
-    #include <colorspace_fragment>
+    csm_Emissive = mix(vec3(0.0), uBurnColor * flickerFactor, isBurning);
+
 }
